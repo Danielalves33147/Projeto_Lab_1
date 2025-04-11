@@ -1,0 +1,155 @@
+@import url('https://fonts.googleapis.com/css2?family=Segoe+UI&display=swap');
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  background-color: #f1f1f1;
+  color: #333;
+}
+
+/* Cabeçalho */
+header {
+  background-color: #6a1b9a;
+  color: white;
+  padding: 20px;
+  text-align: center;
+}
+
+nav ul {
+  display: flex;
+  justify-content: center;
+  list-style: none;
+  padding: 0;
+  margin-top: 10px;
+}
+
+nav ul li {
+  margin: 0 10px;
+}
+
+nav ul li a {
+  color: white;
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: 0.3s;
+}
+
+nav ul li a:hover,
+nav ul li a.ativo {
+  background-color: #8e24aa;
+}
+
+/* Conteúdo principal */
+.cadastro-container {
+  display: flex;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.cadastro-esquerda {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 500px;
+}
+
+/* Seletor de tipo */
+.seletor-cadastro {
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+.seletor-cadastro h3 {
+  margin-bottom: 15px;
+  font-size: 1.2em;
+  color: #333;
+}
+
+.botoes-toggle {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.botoes-toggle button {
+  padding: 10px 25px;
+  font-size: 1em;
+  border-radius: 8px;
+  border: 2px solid #6a1b9a;
+  background-color: white;
+  color: #6a1b9a;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.botoes-toggle button:hover {
+  background-color: #f3e5f5;
+}
+
+.botoes-toggle button.ativo {
+  background-color: #6a1b9a;
+  color: white;
+}
+
+/* Formulários */
+.formulario h3 {
+  margin-top: 0;
+  font-size: 1.1em;
+  color: #4a148c;
+}
+
+.formulario input,
+.formulario select,
+.formulario button {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+.formulario button {
+  background-color: #6a1b9a;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.formulario button:hover {
+  background-color: #4a148c;
+}
+
+/* Rodapé */
+footer {
+  background-color: #6a1b9a;
+  color: white;
+  text-align: center;
+  padding: 12px;
+  margin-top: 40px;
+}
+
+.mensagem {
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: bold;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.mensagem.sucesso {
+  background-color: #e0f7e9;
+  color: #2e7d32;
+  border: 1px solid #a5d6a7;
+}
+
+.mensagem.erro {
+  background-color: #ffebee;
+  color: #c62828;
+  border: 1px solid #ef9a9a;
+}
+

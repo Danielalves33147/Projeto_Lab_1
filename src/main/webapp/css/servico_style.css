@@ -1,0 +1,153 @@
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  background-color: #f1f1f1;
+  color: #333;
+}
+
+header {
+  background-color: #6a1b9a;
+  color: white;
+  padding: 20px;
+  text-align: center;
+}
+
+nav ul {
+  display: flex;
+  justify-content: center;
+  list-style: none;
+  padding: 0;
+  margin-top: 10px;
+}
+
+nav ul li {
+  margin: 0 10px;
+}
+
+nav ul li a {
+  color: white;
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: 0.3s;
+}
+
+nav ul li a:hover,
+nav ul li a.ativo {
+  background-color: #8e24aa;
+}
+
+main {
+  padding: 40px 20px;
+}
+
+.formulario-servico {
+  max-width: 600px;
+  margin: 0 auto;
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.1);
+}
+
+.formulario-servico h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.form-grupo {
+  margin-bottom: 15px;
+}
+
+.form-grupo label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.form-grupo input,
+.form-grupo select {
+  width: 100%;
+  padding: 10px;
+  font-size: 1em;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  background-color: #6a1b9a;
+  color: white;
+  border: none;
+  font-size: 1em;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  background-color: #4a148c;
+}
+
+footer {
+  background-color: #6a1b9a;
+  color: white;
+  text-align: center;
+  padding: 12px;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+
+.linha {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.linha .form-grupo {
+  flex: 1;
+  min-width: 200px;
+}
+
+.linha-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 15px 0;
+}
+
+
+textarea {
+  width: 100%;
+  min-height: 120px;
+  resize: vertical;
+  padding: 10px;
+  font-size: 1em;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+/* Estilo do campo de valor total */
+#valorTotal {
+    width: 100%;
+    padding: 10px;
+    font-size: 1.2em;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    box-sizing: border-box;
+}
+
+/* Estilo do campo de entrada com foco */
+#valorTotal:focus {
+    border-color: #007bff; /* Borda azul quando o campo estiver em foco */
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.5); /* Sombramento azul */
+}
+
+
+
+

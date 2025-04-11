@@ -1,0 +1,88 @@
+/* caminhao_style.css */
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  background-color: #f1f1f1;
+  color: #333;
+}
+
+header {
+  background-color: #6a1b9a;
+  color: white;
+  padding: 20px;
+  text-align: center;
+}
+
+nav ul {
+  display: flex;
+  justify-content: center;
+  list-style: none;
+  padding: 0;
+  margin-top: 10px;
+}
+
+nav ul li {
+  margin: 0 10px;
+}
+
+nav ul li a {
+  color: white;
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: 0.3s;
+}
+
+nav ul li a:hover,
+nav ul li a.ativo {
+  background-color: #8e24aa;
+}
+
+/* Formulário centralizado */
+.cadastro-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 40px;
+}
+
+.cadastro-direita {
+  background-color: #fff;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+  width: 450px;
+}
+
+.formulario input,
+.formulario select,
+.formulario button {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  font-size: 1em;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+.formulario button {
+  background-color: #6a1b9a;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.formulario button:hover {
+  background-color: #4a148c;
+}
+
+footer {
+  background-color: #6a1b9a;
+  color: white;
+  text-align: center;
+  padding: 12px;
+  margin-top: 40px;
+}

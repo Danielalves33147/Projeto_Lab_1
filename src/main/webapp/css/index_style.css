@@ -1,0 +1,170 @@
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  background-color: #f5f5f5;
+  color: #333;
+}
+
+/* HEADER */
+header {
+  background-color: #6a1b9a;
+  color: white;
+  padding: 20px;
+  text-align: center;
+}
+
+header nav ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 10px;
+  display: none;
+}
+
+header nav ul li {
+  margin: 0 10px;
+}
+
+header nav ul li .ativo {
+  background-color: #8e24aa;
+  padding: 6px 12px;
+  border-radius: 6px;
+}
+
+/* CONTAINER GERAL */
+.container {
+  padding: 30px 20px;
+  max-width: 1300px;
+  margin: auto;
+}
+
+/* TÍTULOS */
+.titulo {
+  text-align: center;
+  font-size: 1.8em;
+  margin-bottom: 10px;
+}
+
+.subtitulo {
+  text-align: center;
+  color: #555;
+  font-style: italic;
+  margin-bottom: 30px;
+}
+
+.container-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 60px; /* aumentado para afastar mais a tabela da direita */
+}
+
+/* DASHBOARD */
+.dashboard {
+  flex: 0 0 240px; /* largura reduzida */
+  max-width: 240px;
+  background: white;
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+  align-self: flex-start;
+}
+
+.dashboard-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 25px; /* espaçamento vertical real entre os cards */
+}
+
+.titulo-dashboard {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #6a1b9a;
+}
+
+
+.card-dado {
+  background: #f3e5f5;
+  border-left: 6px solid #6a1b9a;
+  padding: 12px;
+  border-radius: 8px;
+  text-align: center;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.card-dado:hover {
+  background-color: #ede7f6;
+  transform: scale(1.02);
+}
+
+.card-dado h3 {
+  margin: 0;
+  font-size: 1.05em;
+  color: #4a148c;
+}
+
+.valor-dado {
+  font-size: 1.4em;
+  font-weight: bold;
+  margin-top: 6px;
+  color: #333;
+}
+
+/* GRID DE OPÇÕES */
+.grid-opcoes {
+  flex: 1 1 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 25px;
+  position: relative; /* Garante que os links não fiquem cobertos por outros elementos */
+}
+
+/* BOTÕES */
+.opcao {
+  background-color: white;
+  padding: 20px;
+  text-align: center;
+  border-radius: 10px;
+  text-decoration: none;
+  color: #333;
+  box-shadow: 0 0 8px rgba(0,0,0,0.08);
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+  position: relative; /* Garante que o elemento tenha uma posição definida */
+  z-index: 1; /* Certifica-se de que o botão ficará acima de outros elementos */
+  pointer-events: auto; /* Garante que os links podem ser clicados */
+}
+
+.opcao:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+.opcao .icone {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+.opcao h3 {
+  margin: 5px 0;
+  font-size: 1.2rem;
+}
+
+
+/* MENSAGEM DE RODAPÉ */
+.painel-mensagem {
+  margin-top: 40px;
+  background: white;
+  padding: 15px 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  font-size: 0.95rem;
+  color: #444;
+}
+
+/* FOOTER */
+footer {
+  background-color: #6a1b9a;
+  color: white;
+  text-align: center;
+  padding: 12px;
+  margin-top: 40px;
+}

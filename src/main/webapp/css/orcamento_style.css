@@ -1,0 +1,100 @@
+@import url('https://fonts.googleapis.com/css2?family=Segoe+UI&display=swap');
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  background-color: #f1f1f1;
+  color: #333;
+}
+
+header {
+  background-color: #6a1b9a;
+  color: white;
+  padding: 20px;
+  text-align: center;
+}
+
+nav ul {
+  display: flex;
+  justify-content: center;
+  list-style: none;
+  padding: 0;
+  margin-top: 10px;
+}
+
+nav ul li {
+  margin: 0 10px;
+}
+
+nav ul li a {
+  color: white;
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: 0.3s;
+}
+
+nav ul li a:hover,
+nav ul li a.ativo {
+  background-color: #8e24aa;
+}
+
+main {
+  padding: 30px 20px;
+}
+
+.formulario {
+  max-width: 500px;
+  margin: 0 auto;
+  background: white;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.formulario h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.formulario input,
+.formulario textarea,
+.formulario select,
+.formulario label,
+.formulario button {
+  display: block;
+  width: 100%;
+  margin-bottom: 16px; /* aumenta o espaçamento entre os campos */
+  padding: 12px;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+
+textarea {
+  resize: vertical;
+}
+
+.formulario button {
+  background-color: #6a1b9a;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.formulario button:hover {
+  background-color: #4a148c;
+}
+
+footer {
+  background-color: #6a1b9a;
+  color: white;
+  text-align: center;
+  padding: 12px;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}

@@ -1,0 +1,151 @@
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  background-color: #f5f5f5;
+  color: #333;
+}
+
+header {
+  background-color: #6a1b9a;
+  color: white;
+  padding: 20px;
+  text-align: center;
+}
+
+header nav ul {
+  display: flex;
+  justify-content: center;
+  list-style: none;
+  padding: 0;
+  margin-top: 10px;
+}
+
+header nav ul li {
+  margin: 0 10px;
+}
+
+header nav ul li a {
+  color: white;
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: 0.3s;
+}
+
+header nav ul li a:hover,
+header nav ul li a.ativo {
+  background-color: #8e24aa;
+}
+
+/* CONTEÚDO PRINCIPAL */
+.container {
+  max-width: 1100px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+/* BLOCO DO FORMULÁRIO */
+.formulario {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.08);
+  margin-bottom: 30px;
+}
+
+.linha-filtros {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 15px;
+}
+
+.filtro-box {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  width: 160px;
+}
+
+.filtro-box label {
+  font-weight: 600;
+  margin-bottom: 4px;
+  font-size: 0.9rem;
+}
+
+.filtro-box select {
+  width: 100%;
+  padding: 6px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 0.95rem;
+}
+
+/* CAMPO DE BUSCA */
+.campo-busca {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 25px;
+}
+
+.campo-busca input {
+  flex: 1;
+  max-width: 500px;
+  padding: 10px;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.campo-busca button {
+  padding: 10px 14px;
+  font-size: 1rem;
+  background-color: #6a1b9a;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.campo-busca button:hover {
+  background-color: #4a148c;
+}
+
+/* RESULTADOS */
+.resultados {
+  margin-top: 20px;
+}
+
+.tabela-dados {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 30px;
+  background: white;
+  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.tabela-dados thead {
+  background-color: #6a1b9a;
+  color: white;
+}
+
+.tabela-dados th,
+.tabela-dados td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+/* RODAPÉ */
+footer {
+  background-color: #6a1b9a;
+  color: white;
+  text-align: center;
+  padding: 12px;
+  margin-top: 40px;
+}
