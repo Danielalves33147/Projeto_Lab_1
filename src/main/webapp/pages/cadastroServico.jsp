@@ -51,6 +51,8 @@
           <option value="Transporte">Transporte</option>
           <option value="Entrega">Entrega</option>
           <option value="Manutenção">Manutenção</option>
+          <option value="Montagem">Montagem</option>
+          <option value="Diaria Interna">Diaria Interna</option>
         </select>
       </div>
 

@@ -85,6 +85,8 @@ public class ServicoDao {
                 s.setValorTotal(rs.getDouble("ValorTotal"));
                 s.setTransportadorCpf(rs.getString("Transportador_CPF"));
                 s.setDescricaoServico(rs.getString("descricaoServico")); // Adicionando o campo descrição
+                s.setIdOrcamento(rs.getInt("idOrcamento")); // Adicionando valor
+
                 lista.add(s);
             }
         }

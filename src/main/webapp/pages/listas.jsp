@@ -231,39 +231,54 @@
         </tbody>
       </table>
 
-      <!-- Tabela de Serviço -->
-      <h3 class="tabela-titulo" id="titulo-servico" style="display: none;">Serviço</h3>
-      <table id="tabela-servico" class="tabela-dados" style="display: none;">
-        <thead>
-          <tr>
-            <th data-field="id">ID</th>
-            <th data-field="data">Data</th>
-            <th data-field="orcamento">Orçamento</th>
-            <th data-field="descricao">Descrição</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% for (Servico s : servicos) { 
-               // Se dataExecucao estiver nula, usamos dataInicio para exibição
-               String dataExibida = (s.getDataExecucao() != null ? s.getDataExecucao().toString() : s.getDataInicio().toString());
-               // Se houver orçamento vinculado, buscamos no mapa; caso contrário, "N/A"
-               String orcDescricao = "N/A";
-               if(s.getIdOrcamento() != 0) {
-                 Orcamento o = orcMap.get(s.getIdOrcamento());
-                 if(o != null) {
-                   orcDescricao = o.getDescricao(); // ou outro campo que deseje exibir
-                 }
-               }
-          %>
-            <tr>
-              <td><%= s.getIdServico() %></td>
-              <td><%= dataExibida %></td>
-              <td><%= orcDescricao %></td>
-              <td><%= s.getDescricaoServico() %></td>
-            </tr>
-          <% } %>
-        </tbody>
-      </table>
+	<!-- Tabela de Serviço -->
+	<h3 class="tabela-titulo" id="titulo-servico" style="display: none;">Serviço</h3>
+	<table id="tabela-servico" class="tabela-dados" style="display: none;">
+	  <thead>
+	    <tr>
+	      <th data-field="id">ID</th>
+	      <th data-field="dataInicio">Data Início</th>
+	      <th data-field="dataTermino">Data Final</th>
+	      <th data-field="valorTotal">Valor Total</th>
+	      <th data-field="descricao">Descrição</th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	    <% 
+	      for (Servico s : servicos) {
+	          // Recupera as datas do serviço
+	          String dataInicio = s.getDataInicio().toString();
+	          String dataTermino = s.getDataTermino().toString();
+	          
+	          // Variável que será exibida como valor total
+	          String valorExibido = "";
+	          
+	          // Se o serviço estiver vinculado a um orçamento, usa o valor do orçamento;
+	          // caso contrário, usa o valor total próprio do serviço.
+	          if (s.getIdOrcamento() != 0) {
+	              Orcamento o = orcMap.get(s.getIdOrcamento());
+	              if (o != null) {
+	                  valorExibido = "R$ " + o.getValorTotal();
+	              } else {
+	                  // Se por algum motivo o orçamento não for encontrado, usa o valor do serviço
+	                  valorExibido = "R$ " + s.getValorTotal();
+	              }
+	          } else {
+	              valorExibido = "R$ " + s.getValorTotal();
+	          }
+	    %>
+	      <tr>
+	        <td><%= s.getIdServico() %></td>
+	        <td><%= dataInicio %></td>
+	        <td><%= dataTermino %></td>
+	        <td><%= valorExibido %></td>
+	        <td><%= s.getDescricaoServico() %></td>
+	      </tr>
+	    <% } %>
+	  </tbody>
+	</table>
+
+
 
       <!-- Tabela de Orçamento -->
       <h3 class="tabela-titulo" id="titulo-orcamento" style="display: none;">Orçamento</h3>
