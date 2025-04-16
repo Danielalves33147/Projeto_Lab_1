@@ -1,103 +1,120 @@
 package br.com.projeto.dao;
 
 import br.com.projeto.model.Motorista;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MotoristaDao {
-    private Connection conn;
+    private final Connection connection;
 
-    public MotoristaDao(Connection conn) {
-        this.conn = conn;
+    public MotoristaDao(Connection connection) {
+        this.connection = connection;
     }
 
-    // Verifica se o CPF do motorista já está cadastrado
-    public boolean existeCpf(String cpf) throws SQLException {
-        String sql = "SELECT COUNT(*) FROM motorista WHERE CPF = ?";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, cpf);
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                return rs.getInt(1) > 0;
-            }
-        }
-        return false;
+    public void inserir(Motorista m) throws SQLException {
+        String sql = "INSERT INTO motorista (cpf, nomeMotorista, cnh, telefone) VALUES (?, ?, ?, ?)";
+        PreparedStatement stmt = connection.prepareStatement(sql);
+        stmt.setString(1, m.getCpf());
+        stmt.setString(2, m.getNomeMotorista());
+        stmt.setString(3, m.getCnh());
+        stmt.setString(4, m.getTelefone());
+        stmt.executeUpdate();
+        stmt.close();
     }
 
-    // Insere um novo motorista com o vínculo ao transportador através do CPF
-    public void inserir(Motorista motorista) throws SQLException {
-        if (existeCpf(motorista.getCpf())) {
-            throw new SQLException("Já existe um motorista com este CPF cadastrado.");
-        }
-
-        String sql = "INSERT INTO motorista (CPF, NomeMotorista, CNH, Telefone, Transportador_CPF) VALUES (?, ?, ?, ?, ?)";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, motorista.getCpf()); // Usando CPF como chave primária
-            stmt.setString(2, motorista.getNomeMotorista());
-            stmt.setString(3, motorista.getCnh());
-            stmt.setString(4, motorista.getTelefone());
-            stmt.setString(5, motorista.getTransportadorCpf());  // Chave estrangeira para o CPF do transportador
-            stmt.executeUpdate();
-        }
-    }
-
-    // Lista todos os motoristas
     public List<Motorista> listarTodos() throws SQLException {
         List<Motorista> lista = new ArrayList<>();
         String sql = "SELECT * FROM motorista";
-        try (PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
-            while (rs.next()) {
-                Motorista m = new Motorista();
-                m.setCpf(rs.getString("CPF"));
-                m.setNomeMotorista(rs.getString("NomeMotorista"));
-                m.setCnh(rs.getString("CNH"));
-                m.setTelefone(rs.getString("Telefone"));
-                m.setTransportadorCpf(rs.getString("Transportador_CPF"));  // Agora usamos CPF do Transportador
-                lista.add(m);
-            }
+        PreparedStatement stmt = connection.prepareStatement(sql);
+        ResultSet rs = stmt.executeQuery();
+
+        while (rs.next()) {
+            Motorista m = new Motorista();
+            m.setCpf(rs.getString("cpf"));
+            m.setNomeMotorista(rs.getString("nomeMotorista"));
+            m.setCnh(rs.getString("cnh"));
+            m.setTelefone(rs.getString("telefone"));
+            lista.add(m);
         }
+
+        rs.close();
+        stmt.close();
         return lista;
     }
 
-    // Busca um motorista pelo CPF
+    public void atualizar(Motorista m) throws SQLException {
+        String sql = "UPDATE motorista SET nomeMotorista=?, cnh=?, telefone=? WHERE cpf=?";
+        PreparedStatement stmt = connection.prepareStatement(sql);
+        stmt.setString(1, m.getNomeMotorista());
+        stmt.setString(2, m.getCnh());
+        stmt.setString(3, m.getTelefone());
+        stmt.setString(4, m.getCpf());
+        stmt.executeUpdate();
+        stmt.close();
+    }
+
+    public void deletar(String cpf) throws SQLException {
+        String sql = "DELETE FROM motorista WHERE cpf=?";
+        PreparedStatement stmt = connection.prepareStatement(sql);
+        stmt.setString(1, cpf);
+        stmt.executeUpdate();
+        stmt.close();
+    }
+    
     public Motorista buscarPorCpf(String cpf) throws SQLException {
-        String sql = "SELECT * FROM motorista WHERE CPF = ?";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, cpf);
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                Motorista m = new Motorista();
-                m.setCpf(rs.getString("CPF"));
-                m.setNomeMotorista(rs.getString("NomeMotorista"));
-                m.setCnh(rs.getString("CNH"));
-                m.setTelefone(rs.getString("Telefone"));
-                m.setTransportadorCpf(rs.getString("Transportador_CPF"));  // Agora usamos CPF do Transportador
-                return m;
-            }
+        return buscarPorId(cpf);
+    }
+
+    public Motorista buscarPorId(String cpf) throws SQLException {
+        String sql = "SELECT * FROM motorista WHERE cpf=?";
+        PreparedStatement stmt = connection.prepareStatement(sql);
+        stmt.setString(1, cpf);
+        ResultSet rs = stmt.executeQuery();
+
+        if (rs.next()) {
+            Motorista m = new Motorista();
+            m.setCpf(rs.getString("cpf"));
+            m.setNomeMotorista(rs.getString("nomeMotorista"));
+            m.setCnh(rs.getString("cnh"));
+            m.setTelefone(rs.getString("telefone"));
+            rs.close();
+            stmt.close();
+            return m;
         }
+
+        rs.close();
+        stmt.close();
         return null;
     }
 
-    // Alterar o método para aceitar um int
-    public List<Motorista> listarPorTransportador(int idTransportador) throws SQLException {
+    public List<Motorista> buscarPorTransportador(String cpfCnpjTransportador) throws SQLException {
+        String sql = "SELECT DISTINCT m.* " +
+                     "FROM motorista m " +
+                     "JOIN motorista_has_caminhao mhc ON m.cpf = mhc.motorista_cpf " +
+                     "JOIN caminhao c ON mhc.caminhao_placa = c.placa " +
+                     "WHERE c.cpfCnpj = ?";
+
+        PreparedStatement stmt = connection.prepareStatement(sql);
+        stmt.setString(1, cpfCnpjTransportador);
+        ResultSet rs = stmt.executeQuery();
+
         List<Motorista> lista = new ArrayList<>();
-        String sql = "SELECT * FROM motorista WHERE Transportador_idTransportador = ?"; // Ajuste o nome do campo, se necessário
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, idTransportador);  // Usando o tipo correto
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                Motorista m = new Motorista();
-                m.setCpf(rs.getString("CPF"));
-                m.setNomeMotorista(rs.getString("NomeMotorista"));
-                m.setCnh(rs.getString("CNH"));
-                m.setTelefone(rs.getString("Telefone"));
-                m.setTransportadorCpf(rs.getString("Transportador_CPF"));
-                lista.add(m);
-            }
+        while (rs.next()) {
+            Motorista m = new Motorista();
+            m.setCpf(rs.getString("cpf"));
+            m.setNomeMotorista(rs.getString("nomeMotorista"));
+            m.setCnh(rs.getString("cnh"));
+            m.setTelefone(rs.getString("telefone"));
+            lista.add(m);
         }
+
+        rs.close();
+        stmt.close();
         return lista;
     }
+
+
 
 }

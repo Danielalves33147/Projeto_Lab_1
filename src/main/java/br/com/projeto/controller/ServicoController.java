@@ -1,11 +1,9 @@
 package br.com.projeto.controller;
 
-import br.com.projeto.dao.OrcamentoDao;
 import br.com.projeto.dao.ServicoDao;
-import br.com.projeto.dao.TransportadorDao;
-import br.com.projeto.model.Orcamento;
+import br.com.projeto.dao.ServicoHasMotoristaDao;
 import br.com.projeto.model.Servico;
-import br.com.projeto.model.Transportador;
+import br.com.projeto.model.ServicoHasMotorista;
 import utils.Conexao;
 
 import jakarta.servlet.ServletException;
@@ -19,91 +17,56 @@ import java.time.LocalDate;
 @WebServlet("/servico")
 public class ServicoController extends HttpServlet {
 
-    private static final long serialVersionUID = 1L;
-
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try {
-            System.out.println("Iniciando o cadastro de serviço");
+        String acao = request.getParameter("acao");
 
-            // Parâmetros obrigatórios do serviço
-            String tipoServico = request.getParameter("tipoServico");
-            String placaCaminhao = request.getParameter("idCaminhao");
-            String cpfMotorista = request.getParameter("idMotorista");
-            LocalDate dataInicio = LocalDate.parse(request.getParameter("dataInicio"));
-            LocalDate dataTermino = LocalDate.parse(request.getParameter("dataTermino"));
-            String cpfCnpj = request.getParameter("idTransportador");
-            
-            // Parâmetros dos campos manuais
-            String descricaoManual = request.getParameter("descricaoServico");
-            String valorTotalString = request.getParameter("valorTotal");
-            // Remover formatação: ex. "R$ 1.000,00" -> "1000.00"
-            valorTotalString = valorTotalString.replace("R$ ", "").replace(".", "").replace(",", ".");
-            double valorTotalManual = Double.parseDouble(valorTotalString);
-
-            // Captura opcional do orçamento vinculado
-            String idOrcamentoStr = request.getParameter("idOrcamento");
-
-            // Conecta com o banco
-            Connection conn = Conexao.getConnection();
+        try (Connection conn = Conexao.getConnection()) {
             ServicoDao servicoDao = new ServicoDao(conn);
-            TransportadorDao transportadorDao = new TransportadorDao(conn);
+            ServicoHasMotoristaDao vinculoDao = new ServicoHasMotoristaDao(conn);
 
-            // Verifica disponibilidade do motorista e caminhão
-            boolean disponivel = servicoDao.verificarDisponibilidade(cpfMotorista, placaCaminhao, dataInicio, dataTermino);
-            if (!disponivel) {
-                response.sendRedirect("pages/cadastroServico.jsp?erro=Motorista ou Caminhão não disponível durante esse período.");
-                return;
-            }
+            if ("cadastrar".equals(acao)) {
+                Servico s = new Servico();
+                s.setTipoServico(request.getParameter("tipoServico"));
+                s.setDescricaoServico(request.getParameter("descricaoServico"));
+                s.setDataInicio(LocalDate.parse(request.getParameter("dataInicio")));
+                s.setDataTermino(LocalDate.parse(request.getParameter("dataTermino")));
+                s.setValorTotal(Double.parseDouble(request.getParameter("valorTotal").replace(".", "").replace(",", "."))); // Corrigido
 
-            // Verifica se o transportador existe
-            Transportador transportador = transportadorDao.buscarPorCpf(cpfCnpj);
-            if (transportador == null) {
-                response.sendRedirect("pages/cadastroServico.jsp?erro=Transportador não encontrado.");
-                return;
-            }
-
-            // Cria o objeto Servico e seta os campos comuns
-            Servico servico = new Servico();
-            servico.setTipoServico(tipoServico);
-            servico.setCaminhaoUtilizado(placaCaminhao);
-            servico.setMotoristaCpf(cpfMotorista);
-            servico.setDataInicio(dataInicio);
-            servico.setDataTermino(dataTermino);
-            servico.setTransportadorCpf(cpfCnpj);
-
-            // Se for vinculado a um orçamento, usar os dados do orçamento
-            if (idOrcamentoStr != null && !idOrcamentoStr.trim().isEmpty()) {
-                int idOrcamento = Integer.parseInt(idOrcamentoStr);
-                OrcamentoDao orcamentoDao = new OrcamentoDao(conn);
-                Orcamento orcamento = orcamentoDao.buscarPorId(idOrcamento);
-                if (orcamento != null) {
-                    servico.setValorTotal(orcamento.getValorTotal());
-                    servico.setDescricaoServico(orcamento.getDescricao());
-                    servico.setIdOrcamento(idOrcamento);  // Vincula o orçamento ao serviço
+                String idOrcamentoStr = request.getParameter("idOrcamento");
+                if (idOrcamentoStr != null && !idOrcamentoStr.isEmpty()) {
+                    s.setIdOrcamento(Integer.parseInt(idOrcamentoStr));
                 } else {
-                    // Caso não encontre o orçamento, usa os valores manuais
-                    servico.setValorTotal(valorTotalManual);
-                    servico.setDescricaoServico(descricaoManual);
+                    s.setIdOrcamento(null);
                 }
-            } else {
-                // Sem orçamento vinculado, utiliza valores informados manualmente
-                servico.setValorTotal(valorTotalManual);
-                servico.setDescricaoServico(descricaoManual);
-            }
 
-            // Insere o serviço no banco
-            servicoDao.inserir(servico);
-            System.out.println("Serviço inserido com sucesso!");
-            response.sendRedirect("pages/cadastroServico.jsp?sucesso=true");
+                s.setIdTransportador(request.getParameter("idTransportador"));
+
+                // Inserir serviço e obter o ID gerado
+                int idGerado = servicoDao.inserirRetornandoId(s);
+
+                // Vincular motorista + caminhão ao serviço
+                String motoristaCpf = request.getParameter("motoristaCpf");
+                String caminhaoPlaca = request.getParameter("caminhaoPlaca");
+
+                ServicoHasMotorista vinculo = new ServicoHasMotorista();
+                vinculo.setIdServico(idGerado);
+                vinculo.setMotoristaCpf(motoristaCpf);
+                vinculo.setCaminhaoPlaca(caminhaoPlaca);
+
+                vinculoDao.inserir(vinculo);
+
+                response.sendRedirect("pages/listas.jsp?sucesso=true");
+
+            } else if ("deletar".equals(acao)) {
+                int id = Integer.parseInt(request.getParameter("idServico"));
+                servicoDao.deletar(id);
+                response.sendRedirect("pages/listas.jsp?sucesso=true");
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect("pages/cadastroServico.jsp?erro=Erro ao cadastrar o serviço.");
+            response.sendRedirect("pages/cadastroServico.jsp?erro=Erro ao cadastrar serviço");
         }
-    }
-
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.sendRedirect("index.jsp");
     }
 }

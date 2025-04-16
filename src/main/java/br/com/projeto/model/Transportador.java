@@ -1,26 +1,15 @@
 package br.com.projeto.model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class Transportador {
     private String cpfCnpj;
     private String nomeTransportador;
     private String telefone;
     private String endereco;
-    private LocalDate dataRegistro;
+    private LocalDateTime dataRegistro;
 
-    // Construtor padrão
-    public Transportador() {}
-
-    // Construtor com todos os parâmetros
-    public Transportador(String cpfCnpj, String nomeTransportador, String telefone, String endereco, LocalDate dataRegistro) {
-        this.cpfCnpj = cpfCnpj;
-        this.nomeTransportador = nomeTransportador;
-        this.telefone = telefone;
-        this.endereco = endereco;
-        this.dataRegistro = dataRegistro;
-    }
-
+    // Getters e Setters
     public String getCpfCnpj() {
         return cpfCnpj;
     }
@@ -53,11 +42,11 @@ public class Transportador {
         this.endereco = endereco;
     }
 
-    public LocalDate getDataRegistro() {
+    public LocalDateTime getDataRegistro() {
         return dataRegistro;
     }
 
-    public void setDataRegistro(LocalDate dataRegistro) {
+    public void setDataRegistro(LocalDateTime dataRegistro) {
         this.dataRegistro = dataRegistro;
     }
 }

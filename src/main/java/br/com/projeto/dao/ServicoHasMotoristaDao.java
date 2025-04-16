@@ -1,100 +1,100 @@
 package br.com.projeto.dao;
 
-import br.com.projeto.model.Servico;
-import br.com.projeto.model.Motorista;
-import br.com.projeto.model.Caminhao;
+import br.com.projeto.model.ServicoHasMotorista;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ServicoHasMotoristaDao {
-    private Connection conn;
+    private final Connection connection;
 
-    public ServicoHasMotoristaDao(Connection conn) {
-        this.conn = conn;
+    public ServicoHasMotoristaDao(Connection connection) {
+        this.connection = connection;
     }
 
-    // Insere a associação entre serviço, motorista (CPF) e caminhão (Placa)
-    public void inserir(Servico servico, Motorista motorista, Caminhao caminhao) throws SQLException {
-        // Verificar se a associação já existe (para evitar duplicidade)
-        String checkSql = "SELECT COUNT(*) FROM servico_has_motorista WHERE Servico_idServico = ? AND Motorista_CPF = ? AND Caminhao_Placa = ?";
-        try (PreparedStatement stmtCheck = conn.prepareStatement(checkSql)) {
-            stmtCheck.setInt(1, servico.getIdServico());
-            stmtCheck.setString(2, motorista.getCpf());
-            stmtCheck.setString(3, caminhao.getPlaca());
-            ResultSet rsCheck = stmtCheck.executeQuery();
-            if (rsCheck.next() && rsCheck.getInt(1) > 0) {
-                throw new SQLException("Associação entre serviço, motorista e caminhão já existe.");
-            }
-        }
-
-        // Inserir a nova associação
-        String sql = "INSERT INTO servico_has_motorista (Servico_idServico, Motorista_CPF, Caminhao_Placa) VALUES (?, ?, ?)";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, servico.getIdServico());
-            stmt.setString(2, motorista.getCpf());
-            stmt.setString(3, caminhao.getPlaca());
+    // Inserção de vínculo entre Serviço, Motorista e Caminhão
+    public void inserir(ServicoHasMotorista s) throws SQLException {
+        String sql = "INSERT INTO servico_has_motorista (idServico, motorista_cpf, caminhao_placa) VALUES (?, ?, ?)";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, s.getIdServico());
+            stmt.setString(2, s.getMotoristaCpf());
+            stmt.setString(3, s.getCaminhaoPlaca());
             stmt.executeUpdate();
         }
     }
 
-    // Remove associação entre serviço e motorista (por CPF)
-    public void deletar(int idServico, String cpfMotorista) throws SQLException {
-        String sql = "DELETE FROM servico_has_motorista WHERE Servico_idServico = ? AND Motorista_CPF = ?";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, idServico);
-            stmt.setString(2, cpfMotorista);
-            stmt.executeUpdate();
-        }
-    }
+    // Listagem completa de todos os vínculos
+    public List<ServicoHasMotorista> listarTodos() throws SQLException {
+        List<ServicoHasMotorista> lista = new ArrayList<>();
+        String sql = "SELECT * FROM servico_has_motorista";
+        try (PreparedStatement stmt = connection.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
 
-    // Lista motoristas associados a um serviço
-    public List<Motorista> listarMotoristasPorServico(int idServico) throws SQLException {
-        List<Motorista> motoristas = new ArrayList<>();
-        String sql = """
-            SELECT m.* FROM motorista m
-            INNER JOIN servico_has_motorista shm ON m.CPF = shm.Motorista_CPF
-            WHERE shm.Servico_idServico = ?
-        """;
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, idServico);
-            ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
-                Motorista m = new Motorista();
-                m.setCpf(rs.getString("CPF"));
-                m.setNomeMotorista(rs.getString("NomeMotorista"));
-                m.setCnh(rs.getString("CNH"));
-                m.setTelefone(rs.getString("Telefone"));
-                motoristas.add(m);
-            }
-        }
-        return motoristas;
-    }
-
- // Lista serviços associados a um motorista (por CPF)
-    public List<Servico> listarServicosPorMotorista(String cpf) throws SQLException {
-        List<Servico> servicos = new ArrayList<>();
-        String sql = """
-            SELECT s.* FROM servico s
-            INNER JOIN servico_has_motorista shm ON s.idServico = shm.Servico_idServico
-            WHERE shm.Motorista_CPF = ?
-        """;
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, cpf); // Alterado para cpf
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                Servico s = new Servico();
+                ServicoHasMotorista s = new ServicoHasMotorista();
                 s.setIdServico(rs.getInt("idServico"));
-                s.setTipoServico(rs.getString("TipoServico"));
-                s.setLocalOrigem(rs.getString("LocalOrigem"));
-                s.setLocalDestino(rs.getString("LocalDestino"));
-                s.setDistancia(rs.getDouble("Distancia"));
-                s.setCaminhaoUtilizado(rs.getString("CaminhaoUtilizado"));
-                s.setDataExecucao(rs.getDate("DataExecucao").toLocalDate());
-                servicos.add(s);
+                s.setMotoristaCpf(rs.getString("motorista_cpf"));
+                s.setCaminhaoPlaca(rs.getString("caminhao_placa"));
+                lista.add(s);
             }
         }
-        return servicos;
+        return lista;
     }
+
+    // Deletar vínculo específico
+    public void deletar(int idServico, String motoristaCpf, String caminhaoPlaca) throws SQLException {
+        String sql = "DELETE FROM servico_has_motorista WHERE idServico=? AND motorista_cpf=? AND caminhao_placa=?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, idServico);
+            stmt.setString(2, motoristaCpf);
+            stmt.setString(3, caminhaoPlaca);
+            stmt.executeUpdate();
+        }
+    }
+
+    // Buscar todos os motoristas e caminhões vinculados a um serviço específico
+    public List<ServicoHasMotorista> buscarPorServico(int idServico) throws SQLException {
+        List<ServicoHasMotorista> lista = new ArrayList<>();
+        String sql = "SELECT * FROM servico_has_motorista WHERE idServico=?";
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, idServico);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    ServicoHasMotorista s = new ServicoHasMotorista();
+                    s.setIdServico(rs.getInt("idServico"));
+                    s.setMotoristaCpf(rs.getString("motorista_cpf"));
+                    s.setCaminhaoPlaca(rs.getString("caminhao_placa"));
+                    lista.add(s);
+                }
+            }
+        }
+        return lista;
+    }
+    
+    public void deletarPorMotorista(String cpf) throws SQLException {
+        String sql = "DELETE FROM servico_has_motorista WHERE motorista_cpf = ?";
+        PreparedStatement stmt = connection.prepareStatement(sql);
+        stmt.setString(1, cpf);
+        stmt.executeUpdate();
+        stmt.close();
+    }
+
+    
+    public boolean existeVinculoUsado(String motoristaCpf, String caminhaoPlaca) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM servico_has_motorista WHERE motorista_cpf = ? AND caminhao_placa = ?";
+        PreparedStatement stmt = connection.prepareStatement(sql);
+        stmt.setString(1, motoristaCpf);
+        stmt.setString(2, caminhaoPlaca);
+        ResultSet rs = stmt.executeQuery();
+        
+        if (rs.next()) {
+            return rs.getInt(1) > 0;
+        }
+        return false;
+    }
+    
+    
+
+
 }

@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Segoe+UI&display=swap');
+
 body {
   margin: 0;
   font-family: 'Segoe UI', Tahoma, sans-serif;
@@ -61,18 +63,30 @@ main {
 
 .form-grupo label {
   display: block;
-  margin-bottom: 5px;
   font-weight: bold;
+  margin-bottom: 6px;
+  color: #4a148c;
+  font-size: 0.95rem;
+  border: none !important;
+  background: none !important;
+  padding: 0 !important;
+  box-shadow: none !important;
 }
 
 .form-grupo input,
-.form-grupo select {
+.form-grupo select,
+.form-grupo textarea {
   width: 100%;
-  padding: 10px;
-  font-size: 1em;
-  border: 1px solid #ccc;
+  padding: 12px;
+  font-size: 1rem;
   border-radius: 6px;
+  border: 1px solid #ccc;
   box-sizing: border-box;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 120px;
 }
 
 button {
@@ -111,43 +125,3 @@ footer {
   flex: 1;
   min-width: 200px;
 }
-
-.linha-checkbox {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 15px 0;
-}
-
-
-textarea {
-  width: 100%;
-  min-height: 120px;
-  resize: vertical;
-  padding: 10px;
-  font-size: 1em;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  box-sizing: border-box;
-}
-
-/* Estilo do campo de valor total */
-#valorTotal {
-    width: 100%;
-    padding: 10px;
-    font-size: 1.2em;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin-bottom: 10px;
-    box-sizing: border-box;
-}
-
-/* Estilo do campo de entrada com foco */
-#valorTotal:focus {
-    border-color: #007bff; /* Borda azul quando o campo estiver em foco */
-    box-shadow: 0 0 8px rgba(0, 123, 255, 0.5); /* Sombramento azul */
-}
-
-
-
-

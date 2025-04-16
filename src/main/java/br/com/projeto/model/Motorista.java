@@ -1,22 +1,12 @@
 package br.com.projeto.model;
 
 public class Motorista {
-    private String cpf;  // Chave primária
+    private String cpf;
     private String nomeMotorista;
     private String cnh;
     private String telefone;
-    private String transportadorCpf;  // Nova variável para CPF do Transportador
- 
-    
-    public Motorista() {}
 
-    public Motorista(String nomeMotorista, String cpf, String cnh, String telefone) {
-        this.nomeMotorista = nomeMotorista;
-        this.cpf = cpf;
-        this.cnh = cnh;
-        this.telefone = telefone;
-    }
-
+    // Getters e Setters
     public String getCpf() {
         return cpf;
     }
@@ -48,13 +38,4 @@ public class Motorista {
     public void setTelefone(String telefone) {
         this.telefone = telefone;
     }
-
-	public String getTransportadorCpf() {
-		return transportadorCpf;
-	}
-
-	public void setTransportadorCpf(String transportadorCpf) {
-		this.transportadorCpf = transportadorCpf;
-	}
-
 }

@@ -20,14 +20,13 @@
     List<Motorista> motoristas = motoristaDao.listarTodos();
     List<Caminhao> caminhoes = caminhaoDao.listarTodos();
     List<Servico> servicos = servicoDao.listarTodos();
-    // transportadores não são usados na visão geral, mas podem ser úteis
+
 
     // Cálculo das quantidades:
     int qtdMotoristas = (motoristas != null) ? motoristas.size() : 0;
     int qtdCaminhoes = (caminhoes != null) ? caminhoes.size() : 0;
 
     // Definição de "Serviços em Aberto"
-    // Para essa lógica, consideraremos "serviço aberto" aquele cuja DataTermino é maior ou igual à data atual.
     LocalDate hoje = LocalDate.now();
     int servicosAbertos = 0;
     if(servicos != null) {
@@ -99,7 +98,7 @@
           <h3>Orçamento</h3>
           <p>Gerar e registrar estimativas</p>
         </a>
-        <a href="pages/gerarRelatorio.jsp" class="opcao">
+        <a href="pages/relatorioVisual.jsp" class="opcao">
           <div class="icone">📊</div>
           <h3>Relatório</h3>
           <p>Consultar dados e históricos</p>

@@ -1,19 +1,10 @@
 package br.com.projeto.model;
 
-public class ServicoHasMotorista {
-    private int idServico;
+public class MotoristaHasCaminhao {
     private String motoristaCpf;
     private String caminhaoPlaca;
 
     // Getters e Setters
-    public int getIdServico() {
-        return idServico;
-    }
-
-    public void setIdServico(int idServico) {
-        this.idServico = idServico;
-    }
-
     public String getMotoristaCpf() {
         return motoristaCpf;
     }
@@ -29,4 +20,14 @@ public class ServicoHasMotorista {
     public void setCaminhaoPlaca(String caminhaoPlaca) {
         this.caminhaoPlaca = caminhaoPlaca;
     }
+    
+    public MotoristaHasCaminhao(String placaCaminhao, String cpfMotorista) {
+        this.caminhaoPlaca = placaCaminhao;
+        this.motoristaCpf = cpfMotorista;
+    }
+
+    public MotoristaHasCaminhao() {
+        // Construtor vazio necessário para DAO e frameworks
+    }
+
 }

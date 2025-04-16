@@ -14,31 +14,6 @@ header {
   text-align: center;
 }
 
-nav ul {
-  display: flex;
-  justify-content: center;
-  list-style: none;
-  padding: 0;
-  margin-top: 10px;
-}
-
-nav ul li {
-  margin: 0 10px;
-}
-
-nav ul li a {
-  color: white;
-  text-decoration: none;
-  padding: 6px 12px;
-  border-radius: 6px;
-  transition: 0.3s;
-}
-
-nav ul li a:hover,
-nav ul li a.ativo {
-  background-color: #8e24aa;
-}
-
 main {
   padding: 30px 20px;
 }
@@ -57,21 +32,32 @@ main {
   margin-bottom: 20px;
 }
 
-.formulario input,
-.formulario textarea,
-.formulario select,
-.formulario label,
-.formulario button {
+/* ✅ Label sem bordas ou caixa */
+.formulario label {
   display: block;
+  font-weight: bold;
+  color: #4a148c;
+  font-size: 0.95rem;
+  margin-bottom: 6px;
+  padding: 0;
+  border: none;
+  background: none;
+  box-shadow: none;
+}
+
+/* ✅ Apenas inputs, textareas e selects recebem estilo de campo */
+.formulario input[type="text"],
+.formulario input[type="date"],
+.formulario textarea,
+.formulario select {
   width: 100%;
-  margin-bottom: 16px; /* aumenta o espaçamento entre os campos */
   padding: 12px;
   font-size: 1rem;
   border-radius: 6px;
   border: 1px solid #ccc;
+  margin-bottom: 16px;
   box-sizing: border-box;
 }
-
 
 textarea {
   resize: vertical;
@@ -81,6 +67,9 @@ textarea {
   background-color: #6a1b9a;
   color: white;
   border: none;
+  padding: 12px;
+  font-size: 1rem;
+  border-radius: 6px;
   cursor: pointer;
   transition: 0.3s;
 }

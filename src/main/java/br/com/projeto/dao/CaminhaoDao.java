@@ -3,130 +3,107 @@ package br.com.projeto.dao;
 import br.com.projeto.model.Caminhao;
 
 import java.sql.*;
-import java.util.*;
-import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CaminhaoDao {
-    private Connection conn;
+    private final Connection connection;
 
-    public CaminhaoDao(Connection conn) {
-        this.conn = conn;
+    public CaminhaoDao(Connection connection) {
+        this.connection = connection;
     }
 
-    public void inserir(Caminhao caminhao) throws SQLException {
-        String sql = "INSERT INTO caminhao (Placa, Modelo, Tipo, AnoFabricacao, CapacidadeMax, Transportador_CPF) VALUES (?, ?, ?, ?, ?, ?)";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, caminhao.getPlaca());
-            stmt.setString(2, caminhao.getModelo());
-            stmt.setString(3, caminhao.getTipo());
-            stmt.setDate(4, Date.valueOf(caminhao.getAnoFabricacao())); 
-            stmt.setDouble(5, caminhao.getCapacidadeMax());
-            stmt.setString(6, caminhao.getTransportadorCpf());  
-            stmt.executeUpdate();
-        }
+    public void inserir(Caminhao c) throws SQLException {
+        String sql = "INSERT INTO caminhao (placa, modelo, tipo, anoFabricacao, capacidadeMax, cpfCnpj) VALUES (?, ?, ?, ?, ?, ?)";
+        PreparedStatement stmt = connection.prepareStatement(sql);
+        stmt.setString(1, c.getPlaca());
+        stmt.setString(2, c.getModelo());
+        stmt.setString(3, c.getTipo());
+        stmt.setDate(4, Date.valueOf(c.getAnoFabricacao()));
+        stmt.setDouble(5, c.getCapacidadeMax());
+        stmt.setString(6, c.getCpfCnpj());
+        stmt.executeUpdate();
+        stmt.close();
     }
-
 
     public List<Caminhao> listarTodos() throws SQLException {
         List<Caminhao> lista = new ArrayList<>();
         String sql = "SELECT * FROM caminhao";
-        try (PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
-            while (rs.next()) {
-                Caminhao c = new Caminhao();
-                c.setPlaca(rs.getString("Placa"));
-                c.setModelo(rs.getString("Modelo"));
-                c.setTipo(rs.getString("Tipo"));
-                c.setAnoFabricacao(rs.getDate("AnoFabricacao").toLocalDate());
-                c.setCapacidadeMax(rs.getDouble("CapacidadeMax"));
-                lista.add(c);
-            }
+        PreparedStatement stmt = connection.prepareStatement(sql);
+        ResultSet rs = stmt.executeQuery();
+
+        while (rs.next()) {
+            Caminhao c = new Caminhao();
+            c.setPlaca(rs.getString("placa"));
+            c.setModelo(rs.getString("modelo"));
+            c.setTipo(rs.getString("tipo"));
+            c.setAnoFabricacao(rs.getDate("anoFabricacao").toLocalDate());
+            c.setCapacidadeMax(rs.getDouble("capacidadeMax"));
+            c.setCpfCnpj(rs.getString("cpfCnpj"));
+            lista.add(c);
         }
+
+        rs.close();
+        stmt.close();
         return lista;
     }
 
-    public Caminhao buscarPorPlaca(String placa) throws SQLException {
-        String sql = "SELECT * FROM caminhao WHERE Placa = ?";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, placa);
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                return new Caminhao(
-                    rs.getString("Placa"),
-                    rs.getString("Modelo"),
-                    rs.getString("Tipo"),
-                    rs.getDate("AnoFabricacao").toLocalDate(),
-                    rs.getDouble("CapacidadeMax")
-                );
-            }
-        }
-        return null;
+    public void atualizar(Caminhao c) throws SQLException {
+        String sql = "UPDATE caminhao SET modelo=?, tipo=?, anoFabricacao=?, capacidadeMax=?, cpfCnpj=? WHERE placa=?";
+        PreparedStatement stmt = connection.prepareStatement(sql);
+        stmt.setString(1, c.getModelo());
+        stmt.setString(2, c.getTipo());
+        stmt.setDate(3, Date.valueOf(c.getAnoFabricacao()));
+        stmt.setDouble(4, c.getCapacidadeMax());
+        stmt.setString(5, c.getCpfCnpj());
+        stmt.setString(6, c.getPlaca());
+        stmt.executeUpdate();
+        stmt.close();
     }
 
     public void deletar(String placa) throws SQLException {
-        String sql = "DELETE FROM caminhao WHERE Placa = ?";
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, placa);
-            stmt.executeUpdate();
-        }
+        String sql = "DELETE FROM caminhao WHERE placa=?";
+        PreparedStatement stmt = connection.prepareStatement(sql);
+        stmt.setString(1, placa);
+        stmt.executeUpdate();
+        stmt.close();
+    }
+    
+    public Caminhao buscarPorPlaca(String placa) throws SQLException {
+        return buscarPorId(placa);
     }
 
-    public List<Caminhao> listarPorTransportador(int idTransportador) throws SQLException {
-        List<Caminhao> lista = new ArrayList<>();
-        String sql = "SELECT * FROM caminhao WHERE Transportador_idTransportador = ?";
 
-        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, idTransportador);
-            ResultSet rs = stmt.executeQuery();
+    public Caminhao buscarPorId(String placa) throws SQLException {
+        String sql = "SELECT * FROM caminhao WHERE placa=?";
+        PreparedStatement stmt = connection.prepareStatement(sql);
+        stmt.setString(1, placa);
+        ResultSet rs = stmt.executeQuery();
 
-            while (rs.next()) {
-                Caminhao c = new Caminhao(
-                    rs.getString("Placa"),
-                    rs.getString("Modelo"),
-                    rs.getString("Tipo"),
-                    rs.getDate("AnoFabricacao").toLocalDate(),
-                    rs.getDouble("CapacidadeMax")
-                );
-                lista.add(c);
-            }
+        if (rs.next()) {
+            Caminhao c = new Caminhao();
+            c.setPlaca(rs.getString("placa"));
+            c.setModelo(rs.getString("modelo"));
+            c.setTipo(rs.getString("tipo"));
+            c.setAnoFabricacao(rs.getDate("anoFabricacao").toLocalDate());
+            c.setCapacidadeMax(rs.getDouble("capacidadeMax"));
+            c.setCpfCnpj(rs.getString("cpfCnpj"));
+            rs.close();
+            stmt.close();
+            return c;
         }
-        return lista;
+
+        rs.close();
+        stmt.close();
+        return null;
+    }
+    
+    public void deletarPorTransportador(String cpfCnpj) throws SQLException {
+    	String sql = "DELETE FROM caminhao WHERE cpfCnpj = ?";
+        PreparedStatement stmt = connection.prepareStatement(sql);
+        stmt.setString(1, cpfCnpj);
+        stmt.executeUpdate();
+        stmt.close();
     }
 
-    public List<Map<String, Object>> listarUltimoUsoComMotorista() throws SQLException {
-        List<Map<String, Object>> resultado = new ArrayList<>();
-        String sql = """
-            SELECT 
-                c.Placa, c.Modelo, c.AnoFabricacao, c.CapacidadeMax,
-                m.NomeMotorista, s.DataExecucao
-            FROM 
-                caminhao c
-            LEFT JOIN servico_has_motorista shm ON c.Placa = shm.Caminhao_Placa
-            LEFT JOIN servico s ON shm.Servico_idServico = s.idServico
-            LEFT JOIN motorista m ON shm.Motorista_CPF = m.CPF
-            WHERE s.DataExecucao = (
-                SELECT MAX(s2.DataExecucao)
-                FROM servico_has_motorista shm2
-                INNER JOIN servico s2 ON shm2.Servico_idServico = s2.idServico
-                WHERE shm2.Caminhao_Placa = c.Placa
-            )
-            ORDER BY c.Placa;
-        """;
-
-        try (PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
-
-            while (rs.next()) {
-                Map<String, Object> linha = new HashMap<>();
-                linha.put("placa", rs.getString("Placa"));
-                linha.put("modelo", rs.getString("Modelo"));
-                linha.put("anoFabricacao", rs.getDate("AnoFabricacao"));
-                linha.put("capacidadeMax", rs.getDouble("CapacidadeMax"));
-                linha.put("motorista", rs.getString("NomeMotorista") != null ? rs.getString("NomeMotorista") : "Nunca usado");
-                linha.put("dataExecucao", rs.getDate("DataExecucao") != null ? rs.getDate("DataExecucao").toString() : "-");
-                resultado.add(linha);
-            }
-        }
-        return resultado;
-    }
 }

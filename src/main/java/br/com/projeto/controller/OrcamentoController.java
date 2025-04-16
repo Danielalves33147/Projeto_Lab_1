@@ -15,53 +15,47 @@ import java.time.LocalDate;
 @WebServlet("/orcamento")
 public class OrcamentoController extends HttpServlet {
 
-    private static final long serialVersionUID = 1L;
-
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        try {
-            // Não estamos mais lendo valorCombustivel, somente os campos restantes.
-            double valorDiaria = Double.parseDouble(request.getParameter("valorDiaria"));
-            double valorTotal = Double.parseDouble(request.getParameter("valorTotal"));
-            LocalDate dataEmissao = LocalDate.parse(request.getParameter("dataEmissao"));
-            
-            // Captura opcional do idServico
-            String idServicoStr = request.getParameter("idServico");
-            int idServico = 0; // Valor default (ou pode ser tratado como não vinculado)
-            if (idServicoStr != null && !idServicoStr.trim().isEmpty()) {
-                idServico = Integer.parseInt(idServicoStr);
-            }
-            
-            // Outros parâmetros
-            String descricao = request.getParameter("descricao");
-            String tipoServico = request.getParameter("tipoServico");
-            String detalhes = request.getParameter("detalhes");
+        String acao = request.getParameter("acao");
 
-            // Criar objeto Orcamento e preencher com os dados
-            Orcamento orcamento = new Orcamento();
-            orcamento.setValorDiaria(valorDiaria);
-            orcamento.setValorTotal(valorTotal);
-            orcamento.setDataEmissao(dataEmissao);
-            orcamento.setIdServico(idServico);
-            orcamento.setDescricao(descricao);
-            orcamento.setTipoServico(tipoServico);
-            orcamento.setDetalhes(detalhes);
-
-            // Obter conexão e instanciar o DAO
-            Connection conn = Conexao.getConnection();
+        try (Connection conn = Conexao.getConnection()) {
             OrcamentoDao dao = new OrcamentoDao(conn);
-            dao.inserir(orcamento);
 
-            response.sendRedirect("pages/cadastroOrcamento.jsp?sucessoOrcamento=true");
+            if ("cadastrar".equals(acao)) {
+                Orcamento o = new Orcamento();
+                o.setDescricao(request.getParameter("descricao"));
+                o.setTipoServico(request.getParameter("tipoServico"));
+                o.setDetalhes(request.getParameter("detalhes"));
+                o.setValorDiaria(Double.parseDouble(request.getParameter("valorDiaria").replace(",", ".")));
+                o.setValorTotal(Double.parseDouble(request.getParameter("valorTotal").replace(",", ".")));
+                o.setDataEmissao(LocalDate.parse(request.getParameter("dataEmissao")));
+
+                dao.inserir(o);
+                response.sendRedirect("pages/listarOrcamentos.jsp?sucesso=true");
+
+            } else if ("atualizar".equals(acao)) {
+                Orcamento o = new Orcamento();
+                o.setIdOrcamento(Integer.parseInt(request.getParameter("idOrcamento")));
+                o.setDescricao(request.getParameter("descricao"));
+                o.setTipoServico(request.getParameter("tipoServico"));
+                o.setDetalhes(request.getParameter("detalhes"));
+                o.setValorDiaria(Double.parseDouble(request.getParameter("valorDiaria").replace(",", ".")));
+                o.setValorTotal(Double.parseDouble(request.getParameter("valorTotal").replace(",", ".")));
+                o.setDataEmissao(LocalDate.parse(request.getParameter("dataEmissao")));
+
+                dao.atualizar(o);
+                response.sendRedirect("pages/listarOrcamentos.jsp?sucesso=true");
+
+            } else if ("deletar".equals(acao)) {
+                int id = Integer.parseInt(request.getParameter("idOrcamento"));
+                dao.deletar(id);
+                response.sendRedirect("pages/listarOrcamentos.jsp?sucesso=true");
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect("pages/cadastroOrcamento.jsp?erroOrcamento=" + e.getMessage());
+            response.sendRedirect("pages/erro.jsp?erro=Falha no processamento do orçamento");
         }
-    }
-
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.sendRedirect("index.jsp");
     }
 }
