@@ -14,7 +14,7 @@ public class ServicoDao {
     }
 
     public void inserir(Servico s) throws SQLException {
-        String sql = "INSERT INTO servico (tipoServico, descricaoServico, dataInicio, dataTermino, valorTotal, idOrcamento, idTransportador) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO servico (tipoServico, descricaoServico, dataInicio, dataTermino, valorTotal, idOrcamento) VALUES (?, ?, ?, ?, ?, ?)";
         PreparedStatement stmt = connection.prepareStatement(sql);
         stmt.setString(1, s.getTipoServico());
         stmt.setString(2, s.getDescricaoServico());
@@ -28,14 +28,13 @@ public class ServicoDao {
             stmt.setNull(6, Types.INTEGER);
         }
 
-        stmt.setString(7, s.getIdTransportador());
 
         stmt.executeUpdate();
         stmt.close();
     }
     
     public int inserirRetornandoId(Servico s) throws SQLException {
-        String sql = "INSERT INTO servico (tipoServico, descricaoServico, dataInicio, dataTermino, valorTotal, idOrcamento, idTransportador) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO servico (tipoServico, descricaoServico, dataInicio, dataTermino, valorTotal, idOrcamento) VALUES (?, ?, ?, ?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             stmt.setString(1, s.getTipoServico());
             stmt.setString(2, s.getDescricaoServico());
@@ -49,7 +48,7 @@ public class ServicoDao {
                 stmt.setNull(6, Types.INTEGER);
             }
 
-            stmt.setString(7, s.getIdTransportador());
+
 
             stmt.executeUpdate();
 
@@ -80,7 +79,6 @@ public class ServicoDao {
             s.setValorTotal(rs.getDouble("valorTotal"));
             int idOrcamento = rs.getInt("idOrcamento");
             s.setIdOrcamento(rs.wasNull() ? null : idOrcamento);
-            s.setIdTransportador(rs.getString("idTransportador"));
             lista.add(s);
         }
 
@@ -90,7 +88,7 @@ public class ServicoDao {
     }
 
     public void atualizar(Servico s) throws SQLException {
-        String sql = "UPDATE servico SET tipoServico=?, descricaoServico=?, dataInicio=?, dataTermino=?, valorTotal=?, idOrcamento=?, idTransportador=? WHERE idServico=?";
+        String sql = "UPDATE servico SET tipoServico=?, descricaoServico=?, dataInicio=?, dataTermino=?, valorTotal=?, idOrcamento=? WHERE idServico=?";
         PreparedStatement stmt = connection.prepareStatement(sql);
         stmt.setString(1, s.getTipoServico());
         stmt.setString(2, s.getDescricaoServico());
@@ -104,8 +102,8 @@ public class ServicoDao {
             stmt.setNull(6, Types.INTEGER);
         }
 
-        stmt.setString(7, s.getIdTransportador());
-        stmt.setInt(8, s.getIdServico());
+
+        stmt.setInt(7, s.getIdServico());
 
         stmt.executeUpdate();
         stmt.close();
@@ -135,7 +133,7 @@ public class ServicoDao {
             s.setValorTotal(rs.getDouble("valorTotal"));
             int idOrcamento = rs.getInt("idOrcamento");
             s.setIdOrcamento(rs.wasNull() ? null : idOrcamento);
-            s.setIdTransportador(rs.getString("idTransportador"));
+ 
             rs.close();
             stmt.close();
             return s;

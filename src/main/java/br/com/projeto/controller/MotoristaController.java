@@ -20,7 +20,8 @@ public class MotoristaController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String acao = request.getParameter("acao");
-
+        HttpSession session = request.getSession();
+        
         try (Connection conn = Conexao.getConnection()) {
             MotoristaDao motoristaDao = new MotoristaDao(conn);
             MotoristaHasCaminhaoDao vinculoDao = new MotoristaHasCaminhaoDao(conn);
@@ -36,7 +37,9 @@ public class MotoristaController extends HttpServlet {
                 motoristaDao.inserir(m);
                 vinculoDao.vincularMotoristaCaminhao(m.getCpf(), caminhaoPlaca);
 
-                response.sendRedirect("pages/cadastroUsuario.jsp?sucessoMotorista=true");
+                request.getSession().setAttribute("mensagemSucesso", "Motorista deletado com sucesso.");
+                response.sendRedirect("pages/listas.jsp");
+
 
             } else if ("atualizar".equals(acao)) {
                 String cpf = request.getParameter("cpf");
@@ -64,13 +67,18 @@ public class MotoristaController extends HttpServlet {
                     vinculoAlterado = true;
                 }
 
-                response.sendRedirect("pages/listas.jsp?motoristaAtualizado=true&vinculoAlterado=" + vinculoAlterado);
+                session.setAttribute("mensagemSucesso", vinculoAlterado
+                	    ? "Motorista e vínculo atualizados com sucesso."
+                	    : "Motorista atualizado. Vínculo mantido pois já foi utilizado.");
+                	response.sendRedirect("pages/listas.jsp");
             }
 
             else if ("deletar".equals(acao)) {
                 String cpf = request.getParameter("cpf");
                 motoristaDao.deletar(cpf);
-                response.sendRedirect("pages/listas.jsp?sucesso=true");
+                request.getSession().setAttribute("mensagemSucesso", "Motorista deletado com sucesso.");
+                response.sendRedirect("pages/listas.jsp");
+
             }
 
         } catch (Exception e) {
@@ -96,7 +104,9 @@ public class MotoristaController extends HttpServlet {
                 vinculoDao.deletarPorMotorista(cpf);
 
                 dao.deletar(cpf);
-                response.sendRedirect("pages/listas.jsp?sucesso=true");
+                request.getSession().setAttribute("mensagemSucesso", "Motorista deletado com sucesso.");
+                response.sendRedirect("pages/listas.jsp");
+
 
             } else if ("editar".equals(acao)) {
                 String cpf = request.getParameter("cpf");
@@ -111,7 +121,9 @@ public class MotoristaController extends HttpServlet {
 
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect("pages/listas.jsp?erro=Falha ao deletar motorista");
+            request.getSession().setAttribute("mensagemErro", "Algo deu errado!");
+            response.sendRedirect("pages/listas.jsp");
+
         }
     }
 }

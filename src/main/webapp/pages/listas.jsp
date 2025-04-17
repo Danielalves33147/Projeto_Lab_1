@@ -79,6 +79,25 @@
     </script>
 </head>
 <body>
+<%
+    String msg = (String) session.getAttribute("mensagemSucesso");
+    String erro = (String) session.getAttribute("mensagemErro");
+
+    if (msg != null) {
+%>
+    <script>alert("<%= msg %>");</script>
+<%
+        session.removeAttribute("mensagemSucesso");
+    }
+
+    if (erro != null) {
+%>
+    <script>alert("⚠️ <%= erro %>");</script>
+<%
+        session.removeAttribute("mensagemErro");
+    }
+%>
+
 <header><h1>Listagens do Sistema</h1></header>
 <main class="container">
 <section class="formulario">

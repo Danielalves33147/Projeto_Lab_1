@@ -60,16 +60,6 @@
     </div>
 
     <div class="form-grupo">
-      <label for="idTransportador">Transportador</label>
-      <select name="idTransportador" id="idTransportador" required>
-        <option value="">Selecione</option>
-        <% for (Transportador t : transportadores) { %>
-          <option value="<%= t.getCpfCnpj() %>"><%= t.getNomeTransportador() %> - <%= t.getCpfCnpj() %></option>
-        <% } %>
-      </select>
-    </div>
-
-    <div class="form-grupo">
       <label for="caminhaoSelect">Caminhão</label>
       <select id="caminhaoSelect" name="caminhaoPlaca" required>
         <option value="">Selecione</option>

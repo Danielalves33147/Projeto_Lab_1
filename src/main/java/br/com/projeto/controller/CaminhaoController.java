@@ -24,6 +24,7 @@ public class CaminhaoController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String acao = request.getParameter("acao");
+        HttpSession session = request.getSession();
 
         try (Connection conn = Conexao.getConnection()) {
             CaminhaoDao dao = new CaminhaoDao(conn);
@@ -38,7 +39,10 @@ public class CaminhaoController extends HttpServlet {
                 c.setCpfCnpj(request.getParameter("cpfCnpj"));
 
                 dao.inserir(c);
-                response.sendRedirect("pages/cadastroCaminhao.jsp?sucesso=true");
+                
+                session.setAttribute("mensagemSucesso", "Caminhão cadastrado com sucesso.");
+                response.sendRedirect("pages/listas.jsp");
+
 
             } else if ("atualizar".equals(acao)) {
                 Caminhao c = new Caminhao();
@@ -50,24 +54,29 @@ public class CaminhaoController extends HttpServlet {
                 c.setCpfCnpj(request.getParameter("cpfCnpj"));
 
                 dao.atualizar(c);
-                response.sendRedirect("pages/cadastroCaminhao.jsp?sucesso=true");
+                
+                session.setAttribute("mensagemSucesso", "Caminhão atualizado com sucesso.");
+                response.sendRedirect("pages/listas.jsp");
+
 
             } else if ("deletar".equals(acao)) {
                 String placa = request.getParameter("placa");
                 dao.deletar(placa);
-                response.sendRedirect("pages/cadastroCaminhao.jsp?sucesso=true");
+                session.setAttribute("mensagemSucesso", "Caminhão deletado com sucesso.");
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect("pages/cadastroCaminhao.jsp?erro=Erro ao cadastrar caminhão");
+            session.setAttribute("mensagemErro", "Erro ao processar ação do caminhão.");
+            response.sendRedirect("pages/listas.jsp");
+
         }
     }
     
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String acao = request.getParameter("acao");
-
+        HttpSession session = request.getSession();
         try (Connection conn = Conexao.getConnection()) {
             MotoristaDao dao = new MotoristaDao(conn);
 
@@ -75,13 +84,15 @@ public class CaminhaoController extends HttpServlet {
                 String cpf = request.getParameter("cpf");
                 dao.deletar(cpf);
                 response.sendRedirect("pages/listas.jsp?sucessoDelecaoMotorista=true");
+                response.sendRedirect("pages/listas.jsp");
             } else {
                 response.sendRedirect("pages/listas.jsp?erroAcaoInvalida=true");
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect("pages/listas.jsp?erroMotorista=Erro ao deletar motorista");
+            session.setAttribute("mensagemErro", "Erro ao processar ação do caminhão.");
+            response.sendRedirect("pages/listas.jsp");
         }
     }
 

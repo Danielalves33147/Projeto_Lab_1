@@ -12,6 +12,7 @@ import jakarta.servlet.http.*;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.Date;
 import java.time.LocalDate;
 
 @WebServlet("/servico")
@@ -62,11 +63,62 @@ public class ServicoController extends HttpServlet {
                 int id = Integer.parseInt(request.getParameter("idServico"));
                 servicoDao.deletar(id);
                 response.sendRedirect("pages/listas.jsp?sucesso=true");
+            } else if ("atualizar".equals(acao)) {
+                int id = Integer.parseInt(request.getParameter("idServico"));
+                String tipo = request.getParameter("tipoServico");
+                String descricao = request.getParameter("descricaoServico");
+                LocalDate dataInicio = LocalDate.parse(request.getParameter("dataInicio"));
+                LocalDate dataTermino = LocalDate.parse(request.getParameter("dataTermino"));
+                double valor = Double.parseDouble(request.getParameter("valorTotal"));
+
+                Servico s = new Servico();
+                s.setIdServico(id);
+                s.setTipoServico(tipo);
+                s.setDescricaoServico(descricao);
+                s.setDataInicio(dataInicio);
+                s.setDataTermino(dataTermino);
+                s.setValorTotal(valor);
+
+                servicoDao.atualizar(s); // certifique-se que esse método exista
+
+                response.sendRedirect("pages/listas.jsp");
             }
+
 
         } catch (Exception e) {
             e.printStackTrace();
             response.sendRedirect("pages/cadastroServico.jsp?erro=Erro ao cadastrar serviço");
         }
     }
+    
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String acao = request.getParameter("acao");
+
+        try (Connection conn = Conexao.getConnection()) {
+            ServicoDao servicoDao = new ServicoDao(conn);
+
+            if ("deletar".equals(acao)) {
+                int id = Integer.parseInt(request.getParameter("id"));
+                servicoDao.deletar(id);
+                response.sendRedirect("pages/listas.jsp");
+
+            } else if ("editar".equals(acao)) {
+                int id = Integer.parseInt(request.getParameter("id"));
+                Servico servico = servicoDao.buscarPorId(id);
+
+                if (servico != null) {
+                    request.setAttribute("servicoEditando", servico);
+                    request.getRequestDispatcher("pages/edits/editarServico.jsp").forward(request, response);
+                } else {
+                    response.sendRedirect("pages/listas.jsp?erro=ServicoInexistente");
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect("pages/listas.jsp?erro=ErroAoProcessarServico");
+        }
+    }
+
 }
